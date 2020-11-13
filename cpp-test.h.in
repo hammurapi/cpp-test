@@ -1,0 +1,2 @@
+#define cpp_test_VERSION_MAJOR @cpp-test_VERSION_MAJOR@
+#define cpp_test_VERSION_MINOR @cpp-test_VERSION_MINOR@
