@@ -12,12 +12,10 @@ void draw( const int& x, std::ostream& out, size_t position ) {
 }
 
 struct object_t {
-	object_t( const int& x ) : self_( std::make_unique<int_model_t>( x ) ) {
-		std::cout << "ctor" << std::endl;
+	object_t( int x ) : self_( std::make_unique<int_model_t>( std::move( x ) ) ) {
 	}
 
 	object_t( const object_t& x ) : self_( std::make_unique<int_model_t>( *x.self_ ) ) {
-		std::cout << "copy" << std::endl;
 	}
 
 	object_t( object_t&& ) noexcept = default;
@@ -35,7 +33,7 @@ struct object_t {
 
   private:
 	struct int_model_t {
-		int_model_t( const int& x ) : data_( x ) {}
+		int_model_t( int x ) : data_( std::move( x ) ) {}
 
 		void draw( std::ostream& out, size_t position ) {
 			::draw( data_, out, position );
