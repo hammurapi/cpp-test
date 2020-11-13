@@ -20,6 +20,8 @@ struct object_t {
 		std::cout << "copy" << std::endl;
 	}
 
+	object_t( object_t&& x ) noexcept = default;
+
 	object_t& operator=( object_t x ) noexcept {
 		self_ = std::move( x.self_ );
 		return *this;
