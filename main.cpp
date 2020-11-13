@@ -1,9 +1,12 @@
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <filesystem>
+#include <future>
 #include <iostream>
 #include <memory>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "cpp-test.h"
@@ -90,6 +93,13 @@ int main( int argc, char* argv[] ) {
 
 	commit( h );
 	current( h )[0] = 42.5;
+
+	auto saving = std::async( [document = current( h )]() {
+		std::this_thread::sleep_for( std::chrono::seconds( 3 ) );
+		std::cout << "------------- 'save' ------------------" << std::endl;
+		draw( document, std::cout, 0 );
+	} );
+
 	current( h )[1] = std::string( "World!" );
 	current( h ).emplace_back( current( h ) );
 	current( h ).emplace_back( my_class_t() );
