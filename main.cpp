@@ -20,12 +20,15 @@ struct object_t {
 		std::cout << "copy" << std::endl;
 	}
 
-	object_t( object_t&& x ) noexcept = default;
+	object_t( object_t&& ) noexcept = default;
 
-	object_t& operator=( object_t x ) noexcept {
-		self_ = std::move( x.self_ );
+	object_t& operator=( const object_t& x ) noexcept {
+		object_t tmp( x );
+		*this = std::move( tmp );
 		return *this;
 	}
+
+	object_t& operator=( object_t&& ) noexcept = default;
 
 	friend void draw( const object_t& x, std::ostream& out, size_t position ) {
 		x.self_->draw( out, position );
