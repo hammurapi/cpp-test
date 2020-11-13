@@ -23,8 +23,7 @@ struct object_t {
 	object_t( object_t&& ) noexcept = default;
 
 	object_t& operator=( const object_t& x ) noexcept {
-		object_t tmp( x );
-		*this = std::move( tmp );
+		*this = object_t( x );
 		return *this;
 	}
 
