@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cassert>
 #include <filesystem>
 #include <iostream>
 #include <memory>
@@ -18,6 +19,7 @@ struct object_t {
 	}
 
 	object_t( const object_t& x ) : self_( x.self_->copy_() ) {
+		std::cout << "copy" << std::endl;
 	}
 
 	object_t( object_t&& ) noexcept = default;
@@ -74,22 +76,49 @@ void draw( const my_class_t& x, std::ostream& out, size_t position ) {
 	out << std::string( position, ' ' ) << "my_class_t" << std::endl;
 }
 
+using history_t = std::vector<document_t>;
+
+void commit( history_t& x ) {
+	assert( x.size() );
+	x.push_back( x.back() );
+}
+
+void undo( history_t& x ) {
+	assert( x.size() );
+	x.pop_back();
+}
+
+document_t& current( history_t& x ) {
+	assert( x.size() );
+	return x.back();
+}
+
 int main( int argc, char* argv[] ) {
 	auto executable_path = std::filesystem::path( argv[0] );
 	std::cout << executable_path.stem().string() << " Version " << cpp_test_VERSION_MAJOR << "."
 			  << cpp_test_VERSION_MINOR << std::endl;
 
-	document_t document;
-	// document.reserve( 5 );
+	history_t h( 1 );
 
-	document.emplace_back( 0 );
-	document.emplace_back( std::string( "Hello!" ) );
-	document.emplace_back( document );
-	document.emplace_back( my_class_t() );
+	current( h ).emplace_back( 0 );
+	current( h ).emplace_back( std::string( "Hello!" ) );
 
-	// std::reverse( document.begin(), document.end() );
+	draw( current( h ), std::cout, 0 );
+	std::cout << "-------------------------------" << std::endl;
 
-	draw( document, std::cout, 0 );
+	commit( h );
+	current( h )[0] = 42.5;
+	current( h )[1] = std::string( "World!" );
+	current( h ).emplace_back( current( h ) );
+	current( h ).emplace_back( my_class_t() );
+
+	draw( current( h ), std::cout, 0 );
+	std::cout << "-------------------------------" << std::endl;
+
+	undo( h );
+
+	draw( current( h ), std::cout, 0 );
+	std::cout << "-------------------------------" << std::endl;
 
 	return 0;
 }
