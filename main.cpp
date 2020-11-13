@@ -19,9 +19,8 @@ struct object_t {
 		std::cout << "copy" << std::endl;
 	}
 
-	object_t& operator=( const object_t x ) noexcept {
-		object_t tmp( x );
-		self_ = std::move( tmp.self_ );
+	object_t& operator=( object_t x ) noexcept {
+		self_ = std::move( x.self_ );
 		return *this;
 	}
 
