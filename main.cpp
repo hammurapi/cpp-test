@@ -11,11 +11,18 @@ void draw( const int& x, std::ostream& out, size_t position ) {
 	out << std::string( position, ' ' ) << x << std::endl;
 }
 
+void draw( const std::string& x, std::ostream& out, size_t position ) {
+	out << std::string( position, ' ' ) << x << std::endl;
+}
+
 struct object_t {
 	object_t( int x ) : self_( std::make_unique<int_model_t>( std::move( x ) ) ) {
 	}
 
-	object_t( const object_t& x ) : self_( std::make_unique<int_model_t>( *x.self_ ) ) {
+	object_t( std::string x ) : self_( std::make_unique<string_model_t>( std::move( x ) ) ) {
+	}
+
+	object_t( const object_t& x ) : self_( self_->copy_() ) {
 	}
 
 	object_t( object_t&& ) noexcept = default;
@@ -32,17 +39,41 @@ struct object_t {
 	}
 
   private:
-	struct int_model_t {
+	struct concept_t {
+		virtual ~concept_t() = default;
+		virtual std::unique_ptr<concept_t> copy_() const = 0;
+		virtual void draw( std::ostream&, size_t ) const = 0;
+	};
+
+	struct int_model_t final : concept_t {
 		int_model_t( int x ) : data_( std::move( x ) ) {}
 
-		void draw( std::ostream& out, size_t position ) {
+		std::unique_ptr<concept_t> copy_() const override {
+			return std::make_unique<int_model_t>( *this );
+		}
+
+		void draw( std::ostream& out, size_t position ) const override {
 			::draw( data_, out, position );
 		}
 
 		int data_;
 	};
 
-	std::unique_ptr<int_model_t> self_;
+	struct string_model_t final : concept_t {
+		string_model_t( std::string x ) : data_( std::move( x ) ) {}
+
+		std::unique_ptr<concept_t> copy_() const override {
+			return std::make_unique<string_model_t>( *this );
+		}
+
+		void draw( std::ostream& out, size_t position ) const override {
+			::draw( data_, out, position );
+		}
+
+		std::string data_;
+	};
+
+	std::unique_ptr<concept_t> self_;
 };
 
 using document_t = std::vector<object_t>;
@@ -63,7 +94,7 @@ int main( int argc, char* argv[] ) {
 	document.reserve( 5 );
 
 	document.emplace_back( 0 );
-	document.emplace_back( 1 );
+	document.emplace_back( std::string( "Hello!" ) );
 	document.emplace_back( 2 );
 	document.emplace_back( 3 );
 
