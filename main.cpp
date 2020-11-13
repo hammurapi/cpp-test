@@ -67,6 +67,13 @@ void draw( const document_t& x, std::ostream& out, size_t position ) {
 	out << std::string( position, ' ' ) << "}" << std::endl;
 }
 
+struct my_class_t {
+};
+
+void draw( const my_class_t& x, std::ostream& out, size_t position ) {
+	out << std::string( position, ' ' ) << "my_class_t" << std::endl;
+}
+
 int main( int argc, char* argv[] ) {
 	auto executable_path = std::filesystem::path( argv[0] );
 	std::cout << executable_path.stem().string() << " Version " << cpp_test_VERSION_MAJOR << "."
@@ -78,7 +85,7 @@ int main( int argc, char* argv[] ) {
 	document.emplace_back( 0 );
 	document.emplace_back( std::string( "Hello!" ) );
 	document.emplace_back( 2 );
-	document.emplace_back( 3 );
+	document.emplace_back( my_class_t() );
 
 	// std::reverse( document.begin(), document.end() );
 
