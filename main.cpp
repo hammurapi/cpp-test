@@ -11,11 +11,15 @@ void draw( const int& x, std::ostream& out, size_t position ) {
 }
 
 struct object_t {
-	object_t( const int& x ) : self_( std::make_unique<int_model_t>( x ) ) {}
+	object_t( const int& x ) : self_( std::make_unique<int_model_t>( x ) ) {
+		std::cout << "ctor" << std::endl;
+	}
 
-	object_t( const object_t& x ) : self_( std::make_unique<int_model_t>( *x.self_ ) ) {}
+	object_t( const object_t& x ) : self_( std::make_unique<int_model_t>( *x.self_ ) ) {
+		std::cout << "copy" << std::endl;
+	}
 
-	object_t operator=( const object_t& x ) {
+	object_t& operator=( const object_t x ) noexcept {
 		object_t tmp( x );
 		self_ = std::move( tmp.self_ );
 		return *this;
