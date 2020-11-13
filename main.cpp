@@ -17,7 +17,7 @@ struct object_t {
 	object_t( T x ) : self_( std::make_unique<model<T>>( std::move( x ) ) ) {
 	}
 
-	object_t( const object_t& x ) : self_( self_->copy_() ) {
+	object_t( const object_t& x ) : self_( x.self_->copy_() ) {
 	}
 
 	object_t( object_t&& ) noexcept = default;
@@ -30,14 +30,14 @@ struct object_t {
 	object_t& operator=( object_t&& ) noexcept = default;
 
 	friend void draw( const object_t& x, std::ostream& out, size_t position ) {
-		x.self_->draw( out, position );
+		x.self_->draw_( out, position );
 	}
 
   private:
 	struct concept_t {
 		virtual ~concept_t() = default;
 		virtual std::unique_ptr<concept_t> copy_() const = 0;
-		virtual void draw( std::ostream&, size_t ) const = 0;
+		virtual void draw_( std::ostream&, size_t ) const = 0;
 	};
 
 	template<typename T>
@@ -48,8 +48,8 @@ struct object_t {
 			return std::make_unique<model>( *this );
 		}
 
-		void draw( std::ostream& out, size_t position ) const override {
-			::draw( data_, out, position );
+		void draw_( std::ostream& out, size_t position ) const override {
+			draw( data_, out, position );
 		}
 
 		T data_;
@@ -84,7 +84,7 @@ int main( int argc, char* argv[] ) {
 
 	document.emplace_back( 0 );
 	document.emplace_back( std::string( "Hello!" ) );
-	document.emplace_back( 2 );
+	document.emplace_back( document );
 	document.emplace_back( my_class_t() );
 
 	// std::reverse( document.begin(), document.end() );
