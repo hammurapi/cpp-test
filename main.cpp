@@ -7,11 +7,8 @@
 
 #include "cpp-test.h"
 
-void draw( const int& x, std::ostream& out, size_t position ) {
-	out << std::string( position, ' ' ) << x << std::endl;
-}
-
-void draw( const std::string& x, std::ostream& out, size_t position ) {
+template<typename T>
+void draw( const T& x, std::ostream& out, size_t position ) {
 	out << std::string( position, ' ' ) << x << std::endl;
 }
 
