@@ -9,7 +9,6 @@ int main( int argc, char *argv[] ) {
 	std::cout << executable_path.stem().string() << " Version " << cpp_test_VERSION_MAJOR << "."
 			  << cpp_test_VERSION_MINOR << std::endl;
 
-	std::cout << "Hello world!" << std::endl;
 
 	return 0;
 }
