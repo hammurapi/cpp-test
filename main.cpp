@@ -1,5 +1,6 @@
 #include <filesystem>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -10,14 +11,24 @@ void draw( const int& x, std::ostream& out, size_t position ) {
 }
 
 struct object_t {
-	object_t( const int& x ) : self_( x ) {}
+	object_t( const int& x ) : self_( std::make_unique<int_model_t>( x ) ) {}
 
 	friend void draw( const object_t& x, std::ostream& out, size_t position ) {
-		draw( x.self_, out, position );
+		x.self_->draw( out, position );
 	}
 
   private:
-	int self_;
+	struct int_model_t {
+		int_model_t( const int& x ) : data_( x ) {}
+
+		void draw( std::ostream& out, size_t position ) {
+			::draw( data_, out, position );
+		}
+
+		int data_;
+	};
+
+	std::unique_ptr<int_model_t> self_;
 };
 
 using document_t = std::vector<object_t>;
