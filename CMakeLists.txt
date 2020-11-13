@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.10)
 # set the project name
 project( cpp-test VERSION 0.1 )
 
+set( CMAKE_CXX_STANDARD 17 )
+
 configure_file( cpp-test.h.in cpp-test.h )
 
 # sources
